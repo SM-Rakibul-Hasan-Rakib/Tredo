@@ -6,6 +6,12 @@ import { orderNo, shortDate, tk } from '@/lib/format'
 import { SOURCES, STATUSES } from '@/lib/types'
 import { PageHead, SourceBadge } from '@/components/admin/ui'
 import { StatusSelect } from '@/components/admin/status-select'
+import { DeleteButton } from '@/components/admin/delete-button'
+import { deleteOrder } from '@/app/actions/admin'
+import { Pencil } from 'lucide-react'
+
+const delMsg = (o: { id: number; customer_name: string; status: string }) =>
+  `Order ${orderNo(o.id)} (${o.customer_name}) delete korbe?\n${['Cancelled', 'Returned'].includes(o.status) ? '' : 'Product gulo stock e ferot jabe.\n'}Eta ar ferot ana jabe na.`
 
 export default async function Orders({ searchParams }: { searchParams: Promise<{ q?: string; src?: string; st?: string }> }) {
   await requireAdmin()
@@ -41,13 +47,17 @@ export default async function Orders({ searchParams }: { searchParams: Promise<{
                   <span className="text-sm">COD <b>{tk(m.cod)}</b> • <span className={m.profit >= 0 ? 'text-green-600' : 'text-red-600'}>{counts(o) ? tk(m.profit) : '—'}</span></span>
                   <StatusSelect id={o.id} value={o.status} />
                 </div>
+                <div className="mt-2 flex justify-end gap-2 border-t border-line pt-2">
+                  <Link href={`/admin/orders/${o.id}`} className="btn-light px-3 py-1.5 text-xs"><Pencil size={13} /> Edit</Link>
+                  <DeleteButton action={deleteOrder.bind(null, o.id)} confirmText={delMsg(o)} />
+                </div>
               </div>
             )
           })}
         </div>
         <div className="hidden overflow-x-auto lg:block">
           <table className="w-full">
-            <thead><tr><th className="th">ID</th><th className="th">Date</th><th className="th">Customer</th><th className="th">Items</th><th className="th">Source</th><th className="th text-right">COD</th><th className="th text-right">Profit</th><th className="th">Status</th></tr></thead>
+            <thead><tr><th className="th">ID</th><th className="th">Date</th><th className="th">Customer</th><th className="th">Items</th><th className="th">Source</th><th className="th text-right">COD</th><th className="th text-right">Profit</th><th className="th">Status</th><th className="th text-right">Actions</th></tr></thead>
             <tbody>
               {list.map((o) => {
                 const m = orderMoney(o)
@@ -61,6 +71,10 @@ export default async function Orders({ searchParams }: { searchParams: Promise<{
                     <td className="td text-right">{tk(m.cod)}</td>
                     <td className={`td text-right font-semibold ${m.profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>{counts(o) ? tk(m.profit) : '—'}</td>
                     <td className="td"><StatusSelect id={o.id} value={o.status} /></td>
+                    <td className="td"><div className="flex justify-end gap-1.5">
+                      <Link href={`/admin/orders/${o.id}`} aria-label="Edit" title="Edit" className="grid h-9 w-9 place-items-center rounded-lg border border-line hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"><Pencil size={15} /></Link>
+                      <DeleteButton action={deleteOrder.bind(null, o.id)} confirmText={delMsg(o)} />
+                    </div></td>
                   </tr>
                 )
               })}
