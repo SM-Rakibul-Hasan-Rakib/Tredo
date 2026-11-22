@@ -65,6 +65,7 @@ export function Header({ cats }: { cats: Category[] }) {
               <Link onClick={() => setMenu(false)} href="/shop?sort=new" className="py-3">New Arrivals</Link>
               {cats.map((c) => <Link onClick={() => setMenu(false)} key={c.id} href={`/shop?cat=${c.slug}`} className="py-3">{c.name}</Link>)}
               <Link onClick={() => setMenu(false)} href="/shop?sort=sale" className="py-3 text-sale">Sale</Link>
+              <Link onClick={() => setMenu(false)} href="/login" className="py-3 text-sm text-neutral-500">Admin / Reseller login</Link>
             </div>
           </div>
         </div>

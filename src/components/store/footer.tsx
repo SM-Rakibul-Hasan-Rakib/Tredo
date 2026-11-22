@@ -1,9 +1,14 @@
 import Link from 'next/link'
+import { Mail, MapPin, Phone } from 'lucide-react'
 import type { Category } from '@/lib/types'
 import { InstallApp } from '@/components/install-app'
 
 export function Footer({ cats }: { cats: Category[] }) {
   const name = process.env.NEXT_PUBLIC_SHOP_NAME ?? 'TREDO'
+  const phone = process.env.NEXT_PUBLIC_PHONE ?? '01602-853899'
+  const address = process.env.NEXT_PUBLIC_ADDRESS ?? 'Dhaka, Bangladesh'
+  const email = process.env.NEXT_PUBLIC_EMAIL
+  const tel = '+88' + phone.replace(/\D/g, '').replace(/^88/, '')
   return (
     <>
       <section className="mx-auto grid max-w-[1400px] grid-cols-2 gap-5 border-y border-line px-4 py-10 md:grid-cols-4 md:px-8">
@@ -14,12 +19,14 @@ export function Footer({ cats }: { cats: Category[] }) {
           </div>
         ))}
       </section>
-      <footer className="bg-neutral-50 px-4 pb-24 pt-14 md:px-8 md:pb-8">
-        <div className="grid-cols-[minmax(0,1fr)] mx-auto grid max-w-[1400px] gap-8 md:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
-          <div className="text-sm text-neutral-600">
+      <footer className="bg-neutral-50 px-4 pb-28 pt-14 md:px-8 md:pb-8">
+        <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-8 md:grid-cols-[1.5fr_1fr_1fr_1.3fr]">
+          <div className="col-span-2 text-sm text-neutral-600 md:col-span-1">
             <b className="mb-3 block text-2xl font-bold tracking-[.18em] text-ink">{name}</b>
-            <p>প্রিমিয়াম স্নিকার্স, সারা বাংলাদেশে ক্যাশ অন ডেলিভারি।</p>
-            <p className="mt-2">📞 {process.env.NEXT_PUBLIC_PHONE ?? '01XXXXXXXXX'}</p>
+            <p className="mb-4">প্রিমিয়াম স্নিকার্স, সারা বাংলাদেশে ক্যাশ অন ডেলিভারি।</p>
+            <a href={`tel:${tel}`} className="mb-2 flex items-center gap-2.5 hover:text-ink"><Phone size={16} className="shrink-0" /> <span className="font-semibold text-ink">{phone}</span></a>
+            <p className="mb-2 flex items-start gap-2.5"><MapPin size={16} className="mt-0.5 shrink-0" /> <span>{address}</span></p>
+            {email && <a href={`mailto:${email}`} className="flex items-center gap-2.5 hover:text-ink"><Mail size={16} className="shrink-0" /> {email}</a>}
           </div>
           <div className="flex flex-col gap-2 text-sm text-neutral-600">
             <h5 className="mb-1 font-semibold text-ink">Shop</h5>
@@ -27,12 +34,13 @@ export function Footer({ cats }: { cats: Category[] }) {
           </div>
           <div className="flex flex-col gap-2 text-sm text-neutral-600">
             <h5 className="mb-1 font-semibold text-ink">Help</h5>
-            <span>Size Guide</span><span>Delivery Info</span><span>Exchange Policy</span><Link href="/login">Admin / Reseller login</Link>
+            <span>Size Guide</span><span>Delivery Info</span><span>Exchange Policy</span><Link href="/login" className="hover:text-ink">Admin / Reseller login</Link>
           </div>
-          <div className="text-sm text-neutral-600">
+          <div className="col-span-2 text-sm text-neutral-600 md:col-span-1">
             <h5 className="mb-3 font-semibold text-ink">Talk to us</h5>
-            <a href={process.env.NEXT_PUBLIC_MESSENGER_URL ?? 'https://m.me/'} className="block py-1 hover:text-ink">💬 Messenger</a>
-            <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? ''}`} className="block py-1 hover:text-ink">📱 WhatsApp</a>
+            <a href={process.env.NEXT_PUBLIC_MESSENGER_URL ?? 'https://m.me/'} target="_blank" rel="noopener" className="block py-1 hover:text-ink">💬 Messenger</a>
+            <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? ''}`} target="_blank" rel="noopener" className="block py-1 hover:text-ink">📱 WhatsApp</a>
+            <a href={`tel:${tel}`} className="block py-1 hover:text-ink">📞 Call: {phone}</a>
             <InstallApp />
           </div>
         </div>

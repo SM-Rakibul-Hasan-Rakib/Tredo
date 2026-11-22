@@ -16,16 +16,10 @@ export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname
   const onAdminHost = !!adminHost && host === adminHost
 
-  if (adminHost && !host.startsWith('localhost')) {
-    if (onAdminHost && path === '/') return NextResponse.redirect(new URL('/admin', request.url))
-    if (!onAdminHost && (path.startsWith('/admin') || path.startsWith('/reseller') || path === '/login')) {
-      const url = request.nextUrl.clone()
-      url.host = adminHost
-      url.port = ''
-      url.protocol = 'https'
-      return NextResponse.redirect(url)
-    }
-  }
+  // Admin link: its home page opens the dashboard.
+  // /admin also works on the shop link — we never jump between links, because an installed app
+  // that is sent to another link opens it in the browser and loses its login. Security is the same on both.
+  if (onAdminHost && path === '/') return NextResponse.redirect(new URL('/admin', request.url))
   if (path === '/') return NextResponse.next()
   if (path === '/login') return noStore(NextResponse.next())
 

@@ -3,7 +3,7 @@ import { SideNav } from '@/components/admin/nav'
 import { SessionGuard } from '@/components/admin/session-guard'
 import { IDLE_MS } from '@/lib/admin-session'
 
-export const metadata = { title: 'Admin', manifest: '/admin.webmanifest', appleWebApp: { capable: true, title: 'TREDO Admin' } }
+export const metadata = { title: 'Admin', manifest: '/admin.webmanifest', icons: { apple: '/admin-icon-192.png' }, appleWebApp: { capable: true, title: 'TREDO Admin', statusBarStyle: 'black' as const }, robots: { index: false, follow: false } }
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
