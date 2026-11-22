@@ -34,7 +34,7 @@ export function SideNav({ kind }: { kind: 'admin' | 'reseller' }) {
       ))}
       <div className="contents lg:mt-auto lg:block">
         <Link href="/" className="flex items-center gap-2.5 whitespace-nowrap rounded-lg px-2.5 py-2 text-sm hover:bg-white/5"><Store size={17} />View website</Link>
-        <form action={signOut}><button className="flex w-full items-center gap-2.5 whitespace-nowrap rounded-lg px-2.5 py-2 text-sm hover:bg-white/5"><LogOut size={17} />Logout</button></form>
+        <form action={signOut} onSubmit={() => { try { localStorage.setItem('tredo-admin-logout', String(Date.now())) } catch {} }}><button className="flex w-full items-center gap-2.5 whitespace-nowrap rounded-lg px-2.5 py-2 text-sm hover:bg-white/5"><LogOut size={17} />Logout</button></form>
         <div className="lg:mt-2"><InstallApp variant="nav" /></div>
       </div>
     </aside>

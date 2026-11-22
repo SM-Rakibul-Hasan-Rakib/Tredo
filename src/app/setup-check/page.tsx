@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import { connection } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { notFound } from 'next/navigation'
 
 export const metadata = { title: 'Setup check' }
 
@@ -59,6 +60,8 @@ async function Results() {
 }
 
 export default function SetupCheck() {
+  // only on your computer (npm run dev) — hidden on the live site unless SETUP_CHECK=1
+  if (process.env.NODE_ENV === 'production' && process.env.SETUP_CHECK !== '1') notFound()
   return (
     <div className="mx-auto max-w-2xl px-4 py-10">
       <h1 className="mb-1 text-2xl font-semibold">Setup check</h1>
