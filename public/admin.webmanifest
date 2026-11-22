@@ -25,5 +25,23 @@
       "purpose": "maskable"
     }
   ],
-  "description": "TREDO admin panel"
+  "description": "TREDO admin panel",
+  "shortcuts": [
+    {
+      "name": "New Order",
+      "url": "/admin/orders/new"
+    },
+    {
+      "name": "Orders",
+      "url": "/admin/orders"
+    },
+    {
+      "name": "Products",
+      "url": "/admin/products"
+    },
+    {
+      "name": "Open Website",
+      "url": "/"
+    }
+  ]
 }

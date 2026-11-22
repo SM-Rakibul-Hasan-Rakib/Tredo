@@ -21,7 +21,6 @@ export async function proxy(request: NextRequest) {
   // that is sent to another link opens it in the browser and loses its login. Security is the same on both.
   if (onAdminHost && path === '/') return NextResponse.redirect(new URL('/admin', request.url))
   if (path === '/') return NextResponse.next()
-  if (path === '/login') return noStore(NextResponse.next())
 
   let response = NextResponse.next({ request })
   const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
@@ -47,6 +46,10 @@ export async function proxy(request: NextRequest) {
     return noStore(r)
   }
 
+  const onLogin = path === '/login'
+  // login page: show the form, unless a still-valid session exists → straight to the dashboard
+  if (onLogin && !request.cookies.get(ADMIN_COOKIE)) return noStore(NextResponse.next())
+
   let user: { id: string } | null = null
   try {
     const { data, error } = await supabase.auth.getUser()
@@ -54,14 +57,20 @@ export async function proxy(request: NextRequest) {
   } catch {
     user = null // Auth service down → fail closed
   }
-  if (!user) return toLogin('', false)
+  if (!user) return onLogin ? noStore(response) : toLogin('', false)
 
   const s = await checkSession(request.cookies.get(ADMIN_COOKIE)?.value, user.id)
-  if (!s.ok) return toLogin(s.reason, true)
+  if (!s.ok) {
+    if (!onLogin) return toLogin(s.reason, true)
+    const r = noStore(response)
+    r.cookies.delete(ADMIN_COOKIE)
+    return r
+  }
 
   // role from our own profiles table (server key, never from the browser)
   const role = await getRole(user.id)
-  if (role !== 'admin' && role !== 'reseller') return toLogin('role', true)
+  if (role !== 'admin' && role !== 'reseller') return onLogin ? noStore(response) : toLogin('role', true)
+  if (onLogin) return noStore(NextResponse.redirect(new URL(role === 'admin' ? '/admin' : '/reseller', request.url)))
   if (path.startsWith('/admin') && role !== 'admin') return noStore(NextResponse.redirect(new URL('/reseller', request.url)))
   if (path.startsWith('/reseller') && role !== 'reseller') return noStore(NextResponse.redirect(new URL('/admin', request.url)))
 

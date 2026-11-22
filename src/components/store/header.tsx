@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { Heart, Menu, Search, ShoppingBag, X } from 'lucide-react'
+import { Heart, Menu, Search, ShoppingBag, UserRound, X } from 'lucide-react'
 import type { Category } from '@/lib/types'
 import { useCart } from './cart'
 
@@ -46,7 +46,8 @@ export function Header({ cats }: { cats: Category[] }) {
               <Search size={16} className="text-neutral-500" />
               <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search for sneakers" className="w-full bg-transparent text-sm outline-none" />
             </form>
-            <Link href="/shop?wish=1" className="grid h-10 w-10 place-items-center rounded-full hover:bg-soft" aria-label="Wishlist"><Heart size={21} /></Link>
+            <Link href="/login" className="grid h-10 w-10 place-items-center rounded-full hover:bg-soft" aria-label="Admin / Account" title="Admin / Reseller login"><UserRound size={21} /></Link>
+            <Link href="/shop?wish=1" className="hidden h-10 w-10 place-items-center rounded-full hover:bg-soft sm:grid" aria-label="Wishlist"><Heart size={21} /></Link>
             <button onClick={() => cart.setOpen(true)} className="relative grid h-10 w-10 place-items-center rounded-full hover:bg-soft" aria-label="Bag">
               <ShoppingBag size={21} />
               {cart.count > 0 && <b className="absolute right-0 top-0.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-brand px-1 text-[10px] text-white">{cart.count}</b>}
