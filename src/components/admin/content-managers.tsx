@@ -14,7 +14,7 @@ function useSaver(action: (fd: FormData) => Promise<Res>, onDone: () => void) {
   const submit = (fd: FormData) => start(async () => { setErr(''); const r = await action(fd); if (r.ok) onDone(); else setErr(r.error ?? 'Error') })
   return { pending, err, submit }
 }
-const Active = ({ on }: { on?: boolean }) => <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="is_active" defaultChecked={on ?? true} className="h-4 w-4" /> Website e dekhabe</label>
+const Active = ({ on }: { on?: boolean }) => <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="is_active" defaultChecked={on ?? true} className="h-5 w-5 accent-[#ff5a1f]" /> Website e dekhabe</label>
 const Del = ({ onDel }: { onDel: () => Promise<void> }) => {
   const [p, start] = useTransition()
   return <button type="button" disabled={p} onClick={() => confirm('Delete korbe?') && start(onDel)} className="grid h-9 w-9 place-items-center rounded-lg border border-line text-red-600"><Trash2 size={16} /></button>
@@ -26,7 +26,7 @@ export function CategoryManager({ cats, counts }: { cats: Category[]; counts: Re
   const s = useSaver(saveCategory, () => setEdit(null))
   const c = edit === 'new' ? undefined : edit ?? undefined
   return (
-    <div className="grid items-start gap-4 lg:grid-cols-[1fr_380px]">
+    <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-4 lg:grid-cols-[1fr_380px]">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
         {cats.map((x) => (
           <div key={x.id} className={`overflow-hidden rounded-2xl border border-line bg-white ${x.is_active ? '' : 'opacity-50'}`}>
@@ -70,7 +70,7 @@ export function BannerManager({ banners }: { banners: Banner[] }) {
     <div className="card">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2"><div><h3 className="font-semibold">{title}</h3><p className="text-xs text-neutral-500">{sub}</p></div>
         <button onClick={() => setEdit({ placement: pl })} className="btn bg-[#ff5a1f] text-white">+ Add</button></div>
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-2">
         {banners.filter((x) => x.placement === pl).map((x) => (
           <div key={x.id} className={`overflow-hidden rounded-xl border border-line ${x.is_active ? '' : 'opacity-50'}`}>
             <div className="relative aspect-[16/7] bg-neutral-800">
@@ -86,7 +86,7 @@ export function BannerManager({ banners }: { banners: Banner[] }) {
     </div>
   )
   return (
-    <div className="grid items-start gap-4 lg:grid-cols-[1fr_400px]">
+    <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-4 lg:grid-cols-[1fr_400px]">
       <div className="grid gap-4">
         {group('hero', 'Hero slider (upore boro banner)', 'Photo size: 1920×800 (desktop). Phone er jonno 1080×1350 alada dite paro.')}
         {group('promo', 'Promo banners (Shop by Brand er niche)', 'Joto khushi add koro — 2 ta kore pashapashi dekhabe. Size: 1200×800')}
@@ -105,7 +105,7 @@ export function BannerManager({ banners }: { banners: Banner[] }) {
             <label className="label">Order<input name="sort_order" type="number" defaultValue={b?.sort_order ?? 0} className="input" /></label>
           </div>
           <label className="label">Link (click korle kothay jabe)<input name="link" defaultValue={b?.link ?? '/shop'} className="input" placeholder="/shop?cat=jordan" /></label>
-          <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="dark_text" defaultChecked={b?.dark_text} className="h-4 w-4" /> Photo halka rong er — lekha kalo koro</label>
+          <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="dark_text" defaultChecked={b?.dark_text} className="h-5 w-5 accent-[#ff5a1f]" /> Photo halka rong er — lekha kalo koro</label>
           <Active on={b?.is_active} />
           {s.err && <p className="text-sm text-red-600">{s.err}</p>}
           <div className="flex gap-2">
@@ -125,7 +125,7 @@ export function VideoManager({ videos, products }: { videos: VideoItem[]; produc
   const s = useSaver(saveVideo, () => setEdit(null))
   const v = edit === 'new' ? undefined : edit ?? undefined
   return (
-    <div className="grid items-start gap-4 lg:grid-cols-[1fr_380px]">
+    <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-4 lg:grid-cols-[1fr_380px]">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
         {videos.map((x) => (
           <div key={x.id} className={`overflow-hidden rounded-2xl border border-line bg-white ${x.is_active ? '' : 'opacity-50'}`}>

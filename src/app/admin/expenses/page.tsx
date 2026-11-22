@@ -18,13 +18,13 @@ export default async function Expenses() {
       <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-3">
         <Kpi k="Total expense" v={tk(tot)} /><Kpi k="Marketing (Ads + Boost + Influencer)" v={tk(mkt)} /><Kpi k="Cost per order" v={tk(ok ? mkt / ok : 0)} d={`${ok} orders`} />
       </div>
-      <div className="grid items-start gap-4 lg:grid-cols-[1.4fr_1fr]">
+      <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-4 lg:grid-cols-[1.4fr_1fr]">
         <div className="card overflow-x-auto">
           <table className="w-full">
             <thead><tr><th className="th">Date</th><th className="th">Category</th><th className="th">Note</th><th className="th text-right">Amount</th><th className="th" /></tr></thead>
             <tbody>{exps.map((e) => (
               <tr key={e.id}><td className="td text-neutral-500">{e.date}</td><td className="td font-semibold">{e.category}</td><td className="td text-neutral-500">{e.note}</td><td className="td text-right">{tk(e.amount)}</td>
-                <td className="td"><form action={deleteExpense.bind(null, e.id)}><button className="text-neutral-400 hover:text-red-600">✕</button></form></td></tr>
+                <td className="td"><form action={deleteExpense.bind(null, e.id)}><button aria-label="Delete" className="grid h-9 w-9 place-items-center rounded-lg text-neutral-400 hover:bg-red-50 hover:text-red-600">✕</button></form></td></tr>
             ))}</tbody>
           </table>
           {!exps.length && <p className="p-8 text-center text-neutral-500">No expenses yet</p>}

@@ -37,7 +37,7 @@ export function CheckoutForm() {
   }
 
   return (
-    <form action={submit} className="grid gap-8 md:grid-cols-[1.2fr_1fr]">
+    <form action={submit} className="grid grid-cols-[minmax(0,1fr)] gap-8 md:grid-cols-[1.2fr_1fr]">
       <div className="flex flex-col gap-4">
         <label className="label">আপনার নাম *<input name="name" required className="input" placeholder="Full name" /></label>
         <label className="label">মোবাইল নম্বর *<input name="phone" required inputMode="tel" pattern="(\+?88)?01[3-9]\d{8}" className="input" placeholder="01XXXXXXXXX" /></label>

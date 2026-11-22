@@ -16,10 +16,10 @@ export default async function Home() {
   // HERO — admin banners, or a default design until you add some
   const heroBanners = banners.filter((b) => b.placement === 'hero')
   const slides: Slide[] = heroBanners.length
-    ? heroBanners.map((b) => ({ title: b.title ?? '', sub: b.subtitle ?? '', href: b.link || '/shop', button: b.button_text ?? undefined, image: b.image_url, mobileImage: b.mobile_image_url, dark: b.dark_text }))
+    ? heroBanners.map((b) => ({ title: b.title ?? '', sub: b.subtitle ?? '', href: b.link || '/shop', button: b.button_text ?? undefined, image: b.image_url, mobileImage: b.mobile_image_url, textDark: b.dark_text }))
     : [
-        { title: 'Step Into<br>Premium Comfort', sub: 'Nike Air Force 1, Jordan, Adidas, New Balance — cash on delivery all over Bangladesh.', href: '/shop', button: 'Shop Now', bg: 'linear-gradient(120deg,#efe3d3,#d9bfa2 55%,#c4a283)' },
-        { title: 'Jordan<br>Collection', sub: 'The icons are back in stock. Limited pairs available.', href: '/shop?cat=jordan', button: 'Shop Now', bg: 'radial-gradient(circle at 70% 40%,#3a0d0d,#121212 60%)', dark: true },
+        { title: 'Step Into<br>Premium Comfort', sub: 'Nike Air Force 1, Jordan, Adidas, New Balance — cash on delivery all over Bangladesh.', href: '/shop', button: 'Shop Now', textDark: true },
+        { title: 'Jordan<br>Collection', sub: 'The icons are back in stock. Limited pairs available.', href: '/shop?cat=jordan', button: 'Shop Now' },
       ]
 
   // PROMO — admin banners, or the 2 default ones
@@ -61,7 +61,7 @@ export default async function Home() {
       </section>
 
       {/* PROMO BANNERS — Admin → Banners → Promo */}
-      <section className="mx-auto grid max-w-[1400px] gap-4 px-4 pt-12 md:grid-cols-2 md:px-8">
+      <section className="grid-cols-[minmax(0,1fr)] mx-auto grid max-w-[1400px] gap-4 px-4 pt-12 md:grid-cols-2 md:px-8">
         {promoList.map((b) => (
           <Link key={b.key} href={b.href} className={`group relative flex min-h-[260px] items-end overflow-hidden rounded-3xl p-7 md:min-h-[360px] ${b.light ? 'bg-[linear-gradient(135deg,#e7eef7,#c9d9ee)] text-ink' : 'bg-[linear-gradient(135deg,#1a1a1a,#3a0d0d)] text-white'}`}>
             {b.img && (

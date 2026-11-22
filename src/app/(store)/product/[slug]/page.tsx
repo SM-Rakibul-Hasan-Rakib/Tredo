@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default function ProductPage({ params }: Props) {
   return (
-    <Suspense fallback={<div className="mx-auto grid max-w-[1400px] animate-pulse gap-8 px-4 py-8 md:grid-cols-2 md:px-8"><div className="aspect-square rounded-2xl bg-soft" /><div className="h-80 rounded-2xl bg-soft" /></div>}>
+    <Suspense fallback={<div className="grid-cols-[minmax(0,1fr)] mx-auto grid max-w-[1400px] animate-pulse gap-8 px-4 py-8 md:grid-cols-2 md:px-8"><div className="aspect-square rounded-2xl bg-soft" /><div className="h-80 rounded-2xl bg-soft" /></div>}>
       <Product params={params} />
     </Suspense>
   )
@@ -31,7 +31,7 @@ async function Product({ params }: Props) {
   const related = all.filter((x) => x.category_id === p.category_id && x.id !== p.id).slice(0, 8)
   return (
     <>
-      <div className="mx-auto grid max-w-[1400px] gap-8 px-4 py-8 md:grid-cols-[1.1fr_1fr] md:gap-12 md:px-8">
+      <div className="grid-cols-[minmax(0,1fr)] mx-auto grid max-w-[1400px] gap-8 px-4 py-8 md:grid-cols-[1.1fr_1fr] md:gap-12 md:px-8">
         <Gallery images={p.images} name={p.name} />
         <div className="flex flex-col gap-4">
           <span className="text-xs font-bold uppercase tracking-widest text-neutral-500">{cat?.name}</span>

@@ -18,12 +18,12 @@ export function Header({ cats }: { cats: Category[] }) {
   }
   return (
     <>
-      <div className="bg-ink px-3 py-2 text-center text-[12.5px] text-white">
-        🚚 সারা বাংলাদেশে <b className="font-semibold text-yellow-300">ক্যাশ অন ডেলিভারি</b> • ঢাকায় ২৪ ঘণ্টায় ডেলিভারি • ৭ দিনে এক্সচেঞ্জ
+      <div className="bg-ink px-3 py-2 text-center text-[11.5px] text-white sm:text-[12.5px]">
+        🚚 সারা বাংলাদেশে <b className="font-semibold text-yellow-300">ক্যাশ অন ডেলিভারি</b><span className="hidden sm:inline"> • ঢাকায় ২৪ ঘণ্টায় ডেলিভারি • ৭ দিনে এক্সচেঞ্জ</span>
       </div>
       <header className="sticky top-0 z-30 border-b border-line bg-white/95 backdrop-blur">
-        <div className="mx-auto grid max-w-[1400px] grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-3.5 md:grid-cols-[1fr_auto_1fr] md:px-8">
-          <nav className="hidden items-center gap-7 text-[14.5px] font-medium md:flex">
+        <div className="mx-auto grid max-w-[1400px] grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-3.5 lg:grid-cols-[1fr_auto_1fr] md:px-8">
+          <nav className="hidden items-center gap-6 text-[14.5px] font-medium lg:flex xl:gap-7">
             <Link href="/shop?sort=new" className="hover:text-brand">New Arrivals</Link>
             <div className="group relative">
               <Link href="/shop" className="hover:text-brand">Sneakers ▾</Link>
@@ -36,9 +36,9 @@ export function Header({ cats }: { cats: Category[] }) {
             <Link href="/shop?cat=running" className="hover:text-brand">Running</Link>
             <Link href="/shop?sort=sale" className="text-sale">Sale</Link>
           </nav>
-          <button className="md:hidden" onClick={() => setMenu(true)} aria-label="Menu"><Menu /></button>
-          <Link href="/" className="text-center leading-none md:justify-self-center">
-            <span className="block text-xl font-bold tracking-[.18em] md:text-[26px]">{process.env.NEXT_PUBLIC_SHOP_NAME ?? 'TREDO'}</span>
+          <button className="grid h-10 w-10 place-items-center lg:hidden" onClick={() => setMenu(true)} aria-label="Menu"><Menu /></button>
+          <Link href="/" className="text-center leading-none lg:justify-self-center">
+            <span className="block text-xl font-bold tracking-[.18em] lg:text-[26px]">{process.env.NEXT_PUBLIC_SHOP_NAME ?? 'TREDO'}</span>
             <span className="mt-1 block text-[9px] font-medium tracking-[.35em] text-neutral-400">BANGLADESH</span>
           </Link>
           <div className="flex items-center justify-end gap-1">

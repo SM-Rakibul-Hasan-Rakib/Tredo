@@ -47,9 +47,9 @@ export function ProductForm({ cats, p }: { cats: Category[]; p?: Product }) {
   const total = Object.values(stock).reduce((a, b) => a + b, 0)
 
   return (
-    <form action={submit} className="grid items-start gap-4 lg:grid-cols-[1.4fr_1fr]">
+    <form action={submit} className="grid grid-cols-[minmax(0,1fr)] items-start gap-4 lg:grid-cols-[1.4fr_1fr]">
       {p && <input type="hidden" name="id" value={p.id} />}
-      <div className="card grid gap-3 sm:grid-cols-2">
+      <div className="grid-cols-[minmax(0,1fr)] card grid gap-3 sm:grid-cols-2">
         <label className="label sm:col-span-2">Product name *<input name="name" required defaultValue={p?.name} className="input" placeholder="Nike Air Force 1 '07 Triple White" /></label>
         <label className="label">Category<select name="category_id" defaultValue={p?.category_id ?? cats[0]?.id} className="input">{cats.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select></label>
         <label className="label">Badge<select name="tag" defaultValue={p?.tag ?? ''} className="input"><option value="">None</option><option>HOT</option><option>NEW</option></select></label>
@@ -66,7 +66,7 @@ export function ProductForm({ cats, p }: { cats: Category[]; p?: Product }) {
               <div key={s} className="flex items-center overflow-hidden rounded-lg border border-line">
                 <span className="bg-neutral-100 px-2.5 py-2 text-sm font-semibold">{s}</span>
                 <input type="number" min={0} value={stock[s]} onChange={(e) => setStock((x) => ({ ...x, [s]: Number(e.target.value) }))} className="w-14 px-2 py-2 text-sm outline-none" />
-                <button type="button" onClick={() => setStock((x) => { const n = { ...x }; delete n[s]; return n })} className="px-2 text-neutral-400">✕</button>
+                <button type="button" onClick={() => setStock((x) => { const n = { ...x }; delete n[s]; return n })} aria-label="Remove size" className="grid h-9 w-8 place-items-center text-neutral-400 hover:text-red-600">✕</button>
               </div>
             ))}
             <div className="flex items-center gap-1"><input value={newSize} onChange={(e) => setNewSize(e.target.value)} placeholder="Size" className="input w-20" /><button type="button" onClick={() => { if (newSize) setStock((x) => ({ ...x, [newSize]: 0 })); setNewSize('') }} className="btn-light px-3">+ Add</button></div>
@@ -95,7 +95,7 @@ export function ProductForm({ cats, p }: { cats: Category[]; p?: Product }) {
             </label>
           </div>
         </div>
-        <label className="flex items-center gap-2 text-sm sm:col-span-2"><input type="checkbox" name="is_active" defaultChecked={p?.is_active ?? true} className="h-4 w-4" /> Show on website</label>
+        <label className="flex items-center gap-2 text-sm sm:col-span-2"><input type="checkbox" name="is_active" defaultChecked={p?.is_active ?? true} className="h-5 w-5 accent-[#ff5a1f]" /> Show on website</label>
         {err && <p className="rounded-lg bg-red-50 p-2.5 text-sm text-red-600 sm:col-span-2">{err}</p>}
         <button disabled={pending} className="btn bg-[#ff5a1f] text-white sm:col-span-2">{pending ? 'Saving… (uploading photos)' : '💾 Save product'}</button>
       </div>

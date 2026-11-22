@@ -40,7 +40,7 @@ export function Floating() {
         </a>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-line bg-white pb-2 pt-1.5 text-[11px] md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-line bg-white pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-1.5 text-[11px] md:hidden">
         <Link href="/shop" className="flex flex-col items-center gap-0.5"><Store size={21} />Shop</Link>
         <Link href="/shop?wish=1" className="flex flex-col items-center gap-0.5"><Heart size={21} />Wishlist</Link>
         <Link href="/" className="flex flex-col items-center gap-0.5"><Home size={21} />Home</Link>

@@ -25,7 +25,7 @@ export default async function Reports() {
   return (
     <>
       <PageHead title="Profit Report" sub="All time — shob cost bad diye asol profit" />
-      <div className="mb-4 grid items-start gap-4 lg:grid-cols-[1.4fr_1fr]">
+      <div className="grid-cols-[minmax(0,1fr)] mb-4 grid items-start gap-4 lg:grid-cols-[1.4fr_1fr]">
         <div className="card overflow-x-auto">
           <h3 className="mb-2 font-semibold">Product-wise profit</h3>
           <table className="w-full"><thead><tr><th className="th">Product</th><th className="th text-right">Sold</th><th className="th text-right">Revenue</th><th className="th text-right">Profit</th><th className="th text-right">Per pair</th></tr></thead>

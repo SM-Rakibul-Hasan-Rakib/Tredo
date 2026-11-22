@@ -19,7 +19,7 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
   return (
     <>
       <PageHead title={`Order ${orderNo(o.id)}`} sub={new Date(o.created_at).toLocaleString('en-GB')}><Link href="/admin/orders" className="btn-light">← Back</Link><StatusSelect id={o.id} value={o.status} /></PageHead>
-      <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[1.4fr_1fr]">
         <div className="flex flex-col gap-4">
           <div className="card">
             <div className="mb-3 flex items-center gap-2"><b className="text-lg">{o.customer_name}</b><SourceBadge s={o.source} /></div>
@@ -30,7 +30,7 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
               ))}
             </tbody></table>
           </div>
-          <form action={saveOrderMeta.bind(null, o.id)} className="card grid gap-3 sm:grid-cols-2">
+          <form action={saveOrderMeta.bind(null, o.id)} className="grid-cols-[minmax(0,1fr)] card grid gap-3 sm:grid-cols-2">
             <label className="label sm:col-span-2">Address<input name="address" defaultValue={o.address ?? ''} className="input" /></label>
             {f('courier_name', 'Courier', 'text')}{f('tracking_code', 'Tracking / Consignment ID', 'text')}
             {f('delivery_charge', 'Delivery charge (customer)')}{f('courier_cost', '🔒 Courier cost (actual)')}

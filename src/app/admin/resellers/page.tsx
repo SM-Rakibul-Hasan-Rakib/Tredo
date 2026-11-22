@@ -21,7 +21,7 @@ export default async function Resellers() {
         <Kpi k="Resellers" v={rs.length} /><Kpi k="Reseller orders" v={stats.reduce((a, s) => a + s.os.length, 0)} />
         <Kpi k="Reseller sales" v={tk(stats.reduce((a, s) => a + s.sales, 0))} /><Kpi k="Commission due" v={tk(stats.reduce((a, s) => a + Math.max(0, s.due), 0))} />
       </div>
-      <div className="grid items-start gap-4 lg:grid-cols-[1.6fr_1fr]">
+      <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-4 lg:grid-cols-[1.6fr_1fr]">
         <div className="card overflow-x-auto">
           <table className="w-full">
             <thead><tr><th className="th">Reseller</th><th className="th text-right">Orders</th><th className="th text-right">Sales</th><th className="th text-right">Your profit</th><th className="th text-right">Earned</th><th className="th text-right">Paid</th><th className="th text-right">Due</th><th className="th" /></tr></thead>

@@ -4,6 +4,12 @@ import { CheckCircle2, Download, X } from 'lucide-react'
 
 type BIP = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: string }> }
 
+/**
+ * "Download App" button.
+ * - nav: always visible at the bottom-left of the admin side menu (+ floating on phones)
+ * - footer: website footer
+ * Android/Chrome/Edge: 1-click install. iPhone / others: shows step-by-step help.
+ */
 export function InstallApp({ variant = 'footer' }: { variant?: 'footer' | 'nav' }) {
   const [evt, setEvt] = useState<BIP | null>(null)
   const [device, setDevice] = useState<'ios' | 'android' | 'desktop'>('desktop')
@@ -41,11 +47,13 @@ export function InstallApp({ variant = 'footer' }: { variant?: 'footer' | 'nav' 
     <>
       {variant === 'nav' ? (
         <>
-          <button onClick={click} disabled={installed} className="mb-1 hidden w-full items-center gap-2.5 rounded-xl bg-[#ff5a1f] px-3 py-2.5 text-sm font-semibold text-white disabled:bg-white/10 disabled:text-green-400 md:flex">
+          {/* desktop: bottom-left of the side menu */}
+          <button onClick={click} disabled={installed} className="mb-1 hidden w-full items-center gap-2.5 rounded-xl bg-[#ff5a1f] px-3 py-2.5 text-sm font-semibold text-white disabled:bg-white/10 disabled:text-green-400 lg:flex">
             <Icon size={17} /> {label}
           </button>
+          {/* phone: floating at bottom-left */}
           {!installed && (
-            <button onClick={click} className="fixed bottom-4 left-4 z-40 flex items-center gap-2 rounded-full bg-[#ff5a1f] px-4 py-3 text-sm font-semibold text-white shadow-lg md:hidden">
+            <button onClick={click} className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-40 flex items-center gap-2 rounded-full bg-[#ff5a1f] px-4 py-2.5 text-[13px] font-semibold text-white shadow-lg lg:hidden">
               <Download size={17} /> Download App
             </button>
           )}
@@ -75,7 +83,7 @@ export function InstallApp({ variant = 'footer' }: { variant?: 'footer' | 'nav' 
             {device === 'desktop' && (
               <ol className="list-decimal space-y-2 pl-5 text-sm">
                 <li><b>Chrome</b> ba <b>Edge</b> e ei page kholun</li>
-                <li>Address bar er dan pashe <b>install icon</b> chapun</li>
+                <li>Address bar er dan pashe <b>install icon (🖥️⬇)</b> chapun</li>
                 <li>Na dekhale <b>⋮ → Cast, save and share → Install page as app</b></li>
               </ol>
             )}

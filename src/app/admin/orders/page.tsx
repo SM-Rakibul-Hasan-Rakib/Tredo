@@ -25,7 +25,7 @@ export default async function Orders({ searchParams }: { searchParams: Promise<{
           <span className="self-center text-sm text-neutral-500">{list.length} orders</span>
         </form>
         {/* phone: cards */}
-        <div className="flex flex-col gap-2.5 md:hidden">
+        <div className="grid min-w-0 gap-2.5 sm:grid-cols-2 lg:hidden">
           {list.map((o) => {
             const m = orderMoney(o)
             return (
@@ -45,7 +45,7 @@ export default async function Orders({ searchParams }: { searchParams: Promise<{
             )
           })}
         </div>
-        <div className="hidden overflow-x-auto md:block">
+        <div className="hidden overflow-x-auto lg:block">
           <table className="w-full">
             <thead><tr><th className="th">ID</th><th className="th">Date</th><th className="th">Customer</th><th className="th">Items</th><th className="th">Source</th><th className="th text-right">COD</th><th className="th text-right">Profit</th><th className="th">Status</th></tr></thead>
             <tbody>

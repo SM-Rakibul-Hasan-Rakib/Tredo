@@ -49,8 +49,8 @@ async function Shop({ searchParams }: { searchParams: Promise<SP> }) {
   return (
     <div className="mx-auto max-w-[1400px] px-4 py-10 md:px-8">
       <h1 className="mb-6 text-2xl font-semibold md:text-3xl">{q ? `Search: “${sp.q}”` : cat?.name ?? 'All Sneakers'}</h1>
-      <div className="grid gap-8 md:grid-cols-[230px_1fr]">
-        <aside className="flex flex-col gap-6 md:sticky md:top-24 md:self-start">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 md:grid-cols-[230px_minmax(0,1fr)] md:gap-8">
+        <aside className="flex min-w-0 flex-col gap-5 md:sticky md:top-24 md:gap-6 md:self-start">
           <div>
             <h4 className="mb-2.5 text-xs font-bold uppercase tracking-widest">Category</h4>
             <div className="no-scrollbar flex gap-2 overflow-x-auto md:flex-col md:gap-0.5">
@@ -64,7 +64,7 @@ async function Shop({ searchParams }: { searchParams: Promise<SP> }) {
           </div>
           <div>
             <h4 className="mb-2.5 text-xs font-bold uppercase tracking-widest">Size (EU)</h4>
-            <div className="grid grid-cols-6 gap-1.5 md:grid-cols-4">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(44px,1fr))] gap-1.5 md:grid-cols-4">
               {sizes.map((s) => (
                 <Link key={s} href={link({ size: sp.size === s ? undefined : s })} className={`rounded-lg border py-2 text-center text-sm ${sp.size === s ? 'border-ink bg-ink text-white' : 'border-neutral-300'}`}>{s}</Link>
               ))}
@@ -78,7 +78,7 @@ async function Shop({ searchParams }: { searchParams: Promise<SP> }) {
           </div>
         </aside>
         <div>
-          <div className="mb-4 flex items-center justify-between text-sm text-neutral-500">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2 text-sm text-neutral-500">
             <span>Showing {list.length} of {products.length} results</span>
             <SortSelect value={sp.sort ?? 'pop'} />
           </div>

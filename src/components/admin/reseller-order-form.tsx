@@ -27,8 +27,8 @@ export function ResellerOrderForm({ products, initial }: { products: P[]; initia
     else setErr(r.error)
   })
   return (
-    <form action={submit} className="grid items-start gap-4 lg:grid-cols-[1.4fr_1fr]">
-      <div className="card grid gap-3 sm:grid-cols-2">
+    <form action={submit} className="grid grid-cols-[minmax(0,1fr)] items-start gap-4 lg:grid-cols-[1.4fr_1fr]">
+      <div className="grid-cols-[minmax(0,1fr)] card grid gap-3 sm:grid-cols-2">
         <label className="label">Customer name<input name="name" required className="input" /></label>
         <label className="label">Customer phone<input name="phone" required className="input" /></label>
         <label className="label sm:col-span-2">Address<input name="address" required className="input" /></label>

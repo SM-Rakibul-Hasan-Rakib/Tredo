@@ -43,7 +43,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
         <Kpi k="Marketing Spend" v={tk(mkt)} d={`Cost per order ${tk(ok.length ? mkt / ok.length : 0)}`} />
         <Kpi k="Pending / Returned" v={`${orders.filter((o) => o.status === 'Pending').length} / ${returned}`} d={`Return rate ${orders.length ? Math.round((returned / orders.length) * 100) : 0}%`} />
       </div>
-      <div className="mb-4 grid gap-3 lg:grid-cols-[1.6fr_1fr]">
+      <div className="grid-cols-[minmax(0,1fr)] mb-4 grid gap-3 lg:grid-cols-[1.6fr_1fr]">
         <div className="card">
           <h3 className="mb-3 font-semibold">Revenue vs Net profit <span className="ml-2 text-xs font-normal text-neutral-500">■ revenue <span className="text-[#ff5a1f]">■ profit</span></span></h3>
           <div className="flex h-48 items-end gap-2">
@@ -69,15 +69,15 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
           })}
         </div>
       </div>
-      <div className="grid gap-3 lg:grid-cols-[1.6fr_1fr]">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-3 lg:grid-cols-[1.6fr_1fr]">
         <div className="card overflow-x-auto">
           <h3 className="mb-2 flex justify-between font-semibold">Recent orders <Link href="/admin/orders" className="text-sm text-[#ff5a1f]">View all →</Link></h3>
           <table className="w-full">
             <tbody>
               {orders.slice(0, 8).map((o) => (
                 <tr key={o.id}>
-                  <td className="td font-semibold"><Link href={`/admin/orders/${o.id}`}>{orderNo(o.id)}</Link></td><td className="td text-neutral-500">{shortDate(o.created_at)}</td>
-                  <td className="td">{o.customer_name}</td><td className="td"><SourceBadge s={o.source} /></td>
+                  <td className="td font-semibold"><Link href={`/admin/orders/${o.id}`}>{orderNo(o.id)}</Link></td><td className="td hidden whitespace-nowrap text-neutral-500 xl:table-cell">{shortDate(o.created_at)}</td>
+                  <td className="td">{o.customer_name}</td><td className="td hidden md:table-cell"><SourceBadge s={o.source} /></td>
                   <td className="td text-right font-semibold text-green-600">{counts(o) ? tk(orderMoney(o).profit) : '—'}</td><td className="td"><StatusBadge s={o.status} /></td>
                 </tr>
               ))}

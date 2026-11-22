@@ -52,8 +52,8 @@ export function OrderForm({ products, resellers }: { products: Product[]; resell
   const num = (k: keyof typeof f, label: string) => <label className="label">{label}<input type="number" value={f[k] as number} onChange={(e) => set(k, Number(e.target.value))} className="input" /></label>
 
   return (
-    <div className="grid items-start gap-4 lg:grid-cols-[1.4fr_1fr]">
-      <div className="card grid gap-3 sm:grid-cols-2">
+    <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-4 lg:grid-cols-[1.4fr_1fr]">
+      <div className="grid-cols-[minmax(0,1fr)] card grid gap-3 sm:grid-cols-2">
         <div className="label sm:col-span-2">Order source
           <div className="flex flex-wrap gap-2">{(['Messenger', 'WhatsApp', 'Website', 'Reseller', 'Other'] as OrderSource[]).map((s) => <button type="button" key={s} onClick={() => setSrc(s)} className={`rounded-lg border px-3 py-2 text-sm ${src === s ? 'border-[#ff5a1f] bg-orange-50 text-orange-700' : 'border-line'}`}>{s}</button>)}</div>
         </div>
@@ -77,7 +77,7 @@ export function OrderForm({ products, resellers }: { products: Product[]; resell
                 <select value={l.size} onChange={(e) => upd({ size: e.target.value })} className="input">{sizesOf(prod?.stock ?? {}).map((s) => <option key={s} value={s}>{s} ({prod.stock[s]})</option>)}</select>
                 <input type="number" min={1} value={l.qty} onChange={(e) => upd({ qty: Number(e.target.value) })} className="input" />
                 <input type="number" value={l.unitPrice} onChange={(e) => upd({ unitPrice: Number(e.target.value) })} className="input" title="Selling price" />
-                <button type="button" onClick={() => setLines((ls) => ls.filter((_, j) => j !== k))} className="text-neutral-400">✕</button>
+                <button type="button" onClick={() => setLines((ls) => ls.filter((_, j) => j !== k))} aria-label="Remove" className="grid h-10 place-items-center text-neutral-400 hover:text-red-600">✕</button>
               </div>
             )
           })}
