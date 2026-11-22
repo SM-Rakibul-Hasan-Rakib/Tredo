@@ -3,10 +3,11 @@ import { useState } from 'react'
 import { uploadMedia } from '@/lib/upload-client'
 
 /** Photo/Video picker: uploads on select, keeps the URL in a hidden input so the form can save it */
-export function MediaField({ name, label, value, folder, kind = 'image', hint, aspect = 'aspect-video' }: {
-  name: string; label: string; value?: string | null; folder: 'banners' | 'categories' | 'videos'; kind?: 'image' | 'video'; hint?: string; aspect?: string
+export function MediaField({ name, label, value, folder, kind = 'image', hint, aspect = 'aspect-video', onChange }: {
+  name: string; label: string; value?: string | null; folder: 'banners' | 'categories' | 'videos' | 'orders'; kind?: 'image' | 'video'; hint?: string; aspect?: string; onChange?: (url: string) => void
 }) {
-  const [url, setUrl] = useState(value ?? '')
+  const [url, setUrlState] = useState(value ?? '')
+  const setUrl = (u: string) => { setUrlState(u); onChange?.(u) }
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
   const pick = async (f?: File) => {

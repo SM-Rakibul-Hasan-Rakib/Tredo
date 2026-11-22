@@ -1,11 +1,14 @@
 'use client'
-import { useActionState, useTransition } from 'react'
+import { useActionState, useEffect, useTransition } from 'react'
+import { askConfirm, notify } from './swal'
+import { tk } from '@/lib/format'
 import Link from 'next/link'
 import { addPayout, addReseller, updateReseller } from '@/app/actions/admin'
 import type { Reseller } from '@/lib/types'
 
 export function AddResellerForm() {
   const [state, action, pending] = useActionState(addReseller, null)
+  useEffect(() => { if (state?.ok) notify('Reseller ready!', { text: state.ok }); else if (state?.error) notify('Hoy nai', { type: 'error', text: state.error }) }, [state])
   return (
     <form action={action} className="card grid gap-3">
       <h3 className="font-semibold">Add reseller (login toiri hobe)</h3>
@@ -23,6 +26,7 @@ export function AddResellerForm() {
 
 export function EditResellerForm({ r, email }: { r: Reseller; email: string }) {
   const [state, action, pending] = useActionState(updateReseller, null)
+  useEffect(() => { if (state?.ok) notify('Reseller updated!'); else if (state?.error) notify('Save hoy nai', { type: 'error', text: state.error }) }, [state])
   return (
     <form action={action} className="card grid gap-3 ring-2 ring-blue-300">
       <h3 className="font-semibold">✏️ Edit reseller</h3>
@@ -47,5 +51,5 @@ export function EditResellerForm({ r, email }: { r: Reseller; email: string }) {
 export function PayButton({ id, due }: { id: number; due: number }) {
   const [pending, start] = useTransition()
   if (due <= 0) return <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-700">Settled</span>
-  return <button disabled={pending} onClick={() => start(() => addPayout(id, due))} className="btn-dark px-3 py-1.5 text-xs">{pending ? '…' : 'Mark paid'}</button>
+  return <button disabled={pending} onClick={async () => { if (await askConfirm({ title: `${tk(due)} paid mark korbe?`, text: 'Reseller ke ei taka deya hoyeche hishebe save hobe.', confirmText: 'Haan, paid', danger: false })) start(async () => { await addPayout(id, due); notify('Paid!', { text: `${tk(due)} payout save hoyeche` }) }) }} className="btn-dark px-3 py-1.5 text-xs">{pending ? '…' : 'Mark paid'}</button>
 }

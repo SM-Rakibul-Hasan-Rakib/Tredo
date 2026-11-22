@@ -4,7 +4,7 @@ import { listExpenses, listOrders, listProducts } from '@/lib/admin-data'
 import { counts, orderMoney } from '@/lib/profit'
 import { lastDays, orderNo, shortDate, tk, totalStock } from '@/lib/format'
 import { MARKETING_CATS, SOURCES } from '@/lib/types'
-import { Kpi, PageHead, Row, SourceBadge, StatusBadge } from '@/components/admin/ui'
+import { Kpi, PageHead, Row, SourceBadge, StatusBadge, Thumb, itemImg } from '@/components/admin/ui'
 
 export default async function Dashboard({ searchParams }: { searchParams: Promise<{ r?: string }> }) {
   await requireAdmin()
@@ -77,7 +77,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
               {orders.slice(0, 8).map((o) => (
                 <tr key={o.id}>
                   <td className="td font-semibold"><Link href={`/admin/orders/${o.id}`}>{orderNo(o.id)}</Link></td><td className="td hidden whitespace-nowrap text-neutral-500 xl:table-cell">{shortDate(o.created_at)}</td>
-                  <td className="td">{o.customer_name}</td><td className="td hidden md:table-cell"><SourceBadge s={o.source} /></td>
+                  <td className="td"><div className="flex items-center gap-2"><Thumb src={o.image_url || (o.order_items[0] ? itemImg(o.order_items[0]) : null)} size={36} /><span>{o.customer_name}{o.order_items.length > 1 && <span className="text-xs text-neutral-500"> +{o.order_items.length - 1}</span>}</span></div></td><td className="td hidden md:table-cell"><SourceBadge s={o.source} /></td>
                   <td className="td text-right font-semibold text-green-600">{counts(o) ? tk(orderMoney(o).profit) : '—'}</td><td className="td"><StatusBadge s={o.status} /></td>
                 </tr>
               ))}

@@ -6,18 +6,19 @@ import { deleteBanner, deleteCategory, deleteVideo, saveBanner, saveCategory, sa
 import type { Banner, Category, VideoItem } from '@/lib/types'
 import { tk } from '@/lib/format'
 import { MediaField } from './media-field'
+import { askConfirm, notify } from './swal'
 
 type Res = { ok: boolean; error?: string }
 function useSaver(action: (fd: FormData) => Promise<Res>, onDone: () => void) {
   const [pending, start] = useTransition()
   const [err, setErr] = useState('')
-  const submit = (fd: FormData) => start(async () => { setErr(''); const r = await action(fd); if (r.ok) onDone(); else setErr(r.error ?? 'Error') })
+  const submit = (fd: FormData) => start(async () => { setErr(''); const r = await action(fd); if (r.ok) { notify('Saved!'); onDone() } else { setErr(r.error ?? 'Error'); notify('Save hoy nai', { type: 'error', text: r.error }) } })
   return { pending, err, submit }
 }
 const Active = ({ on }: { on?: boolean }) => <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="is_active" defaultChecked={on ?? true} className="h-5 w-5 accent-[#ff5a1f]" /> Website e dekhabe</label>
 const Del = ({ onDel }: { onDel: () => Promise<void> }) => {
   const [p, start] = useTransition()
-  return <button type="button" disabled={p} onClick={() => confirm('Delete korbe?') && start(onDel)} className="grid h-9 w-9 place-items-center rounded-lg border border-line text-red-600"><Trash2 size={16} /></button>
+  return <button type="button" disabled={p} onClick={async () => { if (await askConfirm({ title: 'Delete korbe?', text: 'Eta ar ferot ana jabe na.' })) start(async () => { await onDel(); notify('Deleted!') }) }} className="grid h-9 w-9 place-items-center rounded-lg border border-line text-red-600"><Trash2 size={16} /></button>
 }
 
 /* ============ CATEGORIES ============ */

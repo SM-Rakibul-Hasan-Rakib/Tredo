@@ -1,6 +1,5 @@
 'use server'
 import { revalidatePath, updateTag } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { requireAdmin } from '@/lib/auth'
 import { db } from '@/lib/supabase/admin'
 import { createOrder, type NewOrder } from '@/lib/orders'
@@ -42,6 +41,7 @@ export async function saveOrderMeta(id: number, fd: FormData) {
     courier_cost: n('courier_cost'), packaging_cost: n('packaging_cost'), delivery_charge: n('delivery_charge'),
     discount: n('discount'), advance: n('advance'), note: t('note') || null,
     address: t('address') || null,
+    ...(fd.has('image_url') ? { image_url: t('image_url') || null } : {}),
   }).eq('id', id)
   // reseller order hole item e reseller price lagbe (commission er hisab)
   if (resellerId) {
@@ -132,7 +132,7 @@ export async function createAdminOrder(o: NewOrder): Promise<{ ok: true; id: num
 }
 
 /* ---------- PRODUCTS ---------- */
-export async function saveProduct(fd: FormData): Promise<{ ok: false; error: string } | void> {
+export async function saveProduct(fd: FormData): Promise<{ ok: false; error: string } | { ok: true }> {
   await requireAdmin()
   const supa = db()
   const id = Number(fd.get('id') || 0)
@@ -170,7 +170,7 @@ export async function saveProduct(fd: FormData): Promise<{ ok: false; error: str
 
   updateTag('products') // ⚡ website updates immediately
   revalidatePath('/admin/products')
-  redirect('/admin/products')
+  return { ok: true as const }
 }
 
 /** Delete a product. Old orders keep the product name & prices (they were copied into the order). */
@@ -194,12 +194,13 @@ export async function deleteProduct(id: number) {
 /** Add a new expense, or edit one (when the form has an id). */
 export async function addExpense(fd: FormData) {
   await requireAdmin()
+  if (!Number(fd.get('amount'))) return { ok: false, error: 'Amount dao' }
   const id = Number(fd.get('id') || 0)
   const row = { category: String(fd.get('category')), amount: Number(fd.get('amount')), date: String(fd.get('date')) || undefined, note: String(fd.get('note') || '') || null }
   if (id) await db().from('expenses').update(row).eq('id', id)
   else await db().from('expenses').insert(row)
   revalidatePath('/admin', 'layout')
-  if (id) redirect('/admin/expenses')
+  return { ok: true }
 }
 export async function deleteExpense(id: number) {
   await requireAdmin()

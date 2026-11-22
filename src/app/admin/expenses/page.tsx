@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { Pencil } from 'lucide-react'
 import { Kpi, PageHead } from '@/components/admin/ui'
 import { DeleteButton } from '@/components/admin/delete-button'
+import { ActionForm } from '@/components/admin/action-form'
 
 export default async function Expenses({ searchParams }: { searchParams: Promise<{ edit?: string }> }) {
   await requireAdmin()
@@ -37,7 +38,7 @@ export default async function Expenses({ searchParams }: { searchParams: Promise
           </table>
           {!exps.length && <p className="p-8 text-center text-neutral-500">No expenses yet</p>}
         </div>
-        <form key={ed?.id ?? 'new'} action={addExpense} className={`card grid gap-3 lg:sticky lg:top-6 ${ed ? 'ring-2 ring-blue-300' : ''}`}>
+        <ActionForm key={ed?.id ?? 'new'} action={addExpense} success={ed ? 'Expense updated!' : 'Expense saved!'} redirectTo={ed ? '/admin/expenses' : undefined} className={`card grid gap-3 lg:sticky lg:top-6 ${ed ? 'ring-2 ring-blue-300' : ''}`}>
           <h3 className="font-semibold">{ed ? '✏️ Edit expense' : 'Add expense'}</h3>
           {ed && <input type="hidden" name="id" value={ed.id} />}
           <label className="label">Category<select name="category" defaultValue={ed?.category} className="input">{[...new Set([...EXPENSE_CATS, ...(ed ? [ed.category] : [])])].map((c) => <option key={c}>{c}</option>)}</select></label>
@@ -48,7 +49,7 @@ export default async function Expenses({ searchParams }: { searchParams: Promise
             <button className="btn flex-1 bg-[#ff5a1f] text-white">{ed ? '💾 Update expense' : 'Save expense'}</button>
             {ed && <Link href="/admin/expenses" className="btn-light">Cancel</Link>}
           </div>
-        </form>
+        </ActionForm>
       </div>
     </>
   )

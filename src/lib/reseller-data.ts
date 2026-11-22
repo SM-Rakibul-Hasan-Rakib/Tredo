@@ -18,7 +18,7 @@ export async function resellerSummary(resellerId: number) {
   // strip hidden numbers before sending to the page
   const safe = orders.map((o) => ({
     id: o.id, created_at: o.created_at, status: o.status, customer_name: o.customer_name, phone: o.phone,
-    items: o.order_items.map((i) => ({ id: i.id, name: i.product_name, size: i.size, qty: i.qty })),
+    items: o.order_items.map((i) => ({ id: i.id, name: i.product_name, size: i.size, qty: i.qty, img: i.product?.images?.[0] ?? null })),
     cod: orderMoney(o).cod, commission: orderMoney(o).resellerCommission,
   }))
   return { reseller: r.data, orders: safe, earned, pending, paid, due: earned - paid, sales, payouts }

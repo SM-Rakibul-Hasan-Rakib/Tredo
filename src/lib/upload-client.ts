@@ -16,7 +16,7 @@ async function shrink(file: File, max = 1920): Promise<File> {
 }
 
 /** Upload a file straight to Supabase Storage and return its public URL */
-export async function uploadMedia(file: File, folder: 'banners' | 'categories' | 'videos') {
+export async function uploadMedia(file: File, folder: 'banners' | 'categories' | 'videos' | 'orders') {
   if (file.size > 50 * 1024 * 1024) throw new Error('File 50MB er beshi — video choto/compress koro')
   const f = await shrink(file)
   const ext = f.type === 'image/webp' ? 'webp' : (f.name.split('.').pop() ?? 'mp4')

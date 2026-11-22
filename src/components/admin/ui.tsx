@@ -1,5 +1,17 @@
 import type { OrderSource, OrderStatus } from '@/lib/types'
 
+/** Small product photo for order lists (👟 if no photo / product deleted) */
+export function Thumb({ src, size = 40 }: { src?: string | null; size?: number }) {
+  return (
+    <span className="relative inline-grid shrink-0 place-items-center overflow-hidden rounded-lg border border-line bg-neutral-100 text-base" style={{ width: size, height: size }}>
+      {/* plain img: works with any photo link (Supabase, Facebook, etc.) */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      {src ? <img src={src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" /> : '👟'}
+    </span>
+  )
+}
+export const itemImg = (i: { product?: { images: string[] } | null }) => i.product?.images?.[0] ?? null
+
 export function PageHead({ title, sub, children }: { title: string; sub?: string; children?: React.ReactNode }) {
   return (
     <div className="mb-5 flex flex-wrap items-center justify-between gap-3">

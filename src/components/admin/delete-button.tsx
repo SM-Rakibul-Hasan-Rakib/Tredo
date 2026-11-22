@@ -2,10 +2,12 @@
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 import { Trash2 } from 'lucide-react'
+import { askConfirm, notify } from './swal'
 
 /**
  * One delete button for the whole admin panel.
- * Asks "sure?" first, runs the server action, then (optional) goes to another page.
+ * Sundor "sure?" popup → server action → ✓ Deleted popup → (optional) onno page e jay.
+ * confirmText: first line = title, baki line = details.
  */
 export function DeleteButton({
   action,
@@ -22,13 +24,20 @@ export function DeleteButton({
 }) {
   const router = useRouter()
   const [pending, start] = useTransition()
-  const run = () => {
-    if (!confirm(confirmText)) return
+  const run = async () => {
+    const [title, ...rest] = confirmText.split('\n')
+    if (!(await askConfirm({ title, text: rest.join('\n').trim() || 'Eta ar ferot ana jabe na.' }))) return
     start(async () => {
-      const r = (await action()) as { ok?: boolean; error?: string } | void
-      if (r && r.ok === false) return alert(r.error ?? 'Delete hoy nai')
-      if (redirectTo) router.push(redirectTo)
-      else router.refresh()
+      try {
+        const r = (await action()) as { ok?: boolean; error?: string } | void
+        if (r && r.ok === false) { notify('Delete hoy nai', { type: 'error', text: r.error }); return }
+        notify('Deleted!', { text: 'Successfully muche fela hoyeche' })
+        if (redirectTo) router.push(redirectTo)
+        else router.refresh()
+      } catch (e) {
+        if (e && typeof e === 'object' && 'digest' in e && String((e as { digest: unknown }).digest).startsWith('NEXT_')) throw e // login expired → redirect
+        notify('Delete hoy nai', { type: 'error', text: e instanceof Error ? e.message : 'Abar try koro' })
+      }
     })
   }
   return (

@@ -4,15 +4,27 @@ import type { Banner, Category, Expense, Order, Payout, Product, Reseller, Video
 
 const since = (days?: number) => (days ? new Date(Date.now() - (days - 1) * 864e5).toISOString().slice(0, 10) : '2000-01-01')
 
+/** Adds each item's product photo (separate small query — works even if the DB relation isn't detected) */
+async function withPhotos(orders: Order[]): Promise<Order[]> {
+  const ids = [...new Set(orders.flatMap((o) => (o.order_items ?? []).map((i) => i.product_id)).filter((x): x is number => !!x))]
+  if (!ids.length) return orders
+  const { data, error } = await db().from('products').select('id, images').in('id', ids)
+  if (error) console.error('❌ order photos:', error.message)
+  const map = new Map((data ?? []).map((p) => [Number(p.id), (p.images as string[] | null) ?? []]))
+  for (const o of orders) for (const i of o.order_items ?? []) i.product = i.product_id ? { images: map.get(Number(i.product_id)) ?? [] } : null
+  return orders
+}
+
 export async function listOrders(opts: { days?: number; resellerId?: number; limit?: number } = {}): Promise<Order[]> {
   let q = db().from('orders').select('*, order_items(*)').gte('created_at', since(opts.days)).order('created_at', { ascending: false }).limit(opts.limit ?? 2000)
   if (opts.resellerId) q = q.eq('reseller_id', opts.resellerId)
-  const { data } = await q
-  return (data as Order[]) ?? []
+  const { data, error } = await q
+  if (error) console.error('❌ listOrders:', error.message)
+  return withPhotos((data as Order[]) ?? [])
 }
 export async function getOrder(id: number): Promise<Order | null> {
   const { data } = await db().from('orders').select('*, order_items(*)').eq('id', id).maybeSingle()
-  return data as Order | null
+  return data ? (await withPhotos([data as Order]))[0] : null
 }
 export async function listProducts(): Promise<Product[]> {
   const { data } = await db().from('products').select('*').order('created_at', { ascending: false })

@@ -19,6 +19,7 @@ export type NewOrder = {
   advance?: number
   reseller_id?: number | null
   note?: string
+  image_url?: string | null
   items: { productId: number; size: string; qty: number; unitPrice?: number }[]
 }
 
@@ -71,6 +72,7 @@ export async function createOrder(o: NewOrder, opts: { allowCustomPrice?: boolea
       advance: o.advance ?? 0,
       reseller_id: o.reseller_id ?? null,
       note: o.note || null,
+      ...(o.image_url ? { image_url: o.image_url } : {}),
     })
     .select('id')
     .single()

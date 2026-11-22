@@ -4,7 +4,7 @@ import { listOrders, listResellers } from '@/lib/admin-data'
 import { counts, orderMoney } from '@/lib/profit'
 import { orderNo, shortDate, tk } from '@/lib/format'
 import { SOURCES, STATUSES } from '@/lib/types'
-import { PageHead, SourceBadge } from '@/components/admin/ui'
+import { PageHead, SourceBadge, Thumb, itemImg } from '@/components/admin/ui'
 import { StatusSelect } from '@/components/admin/status-select'
 import { DeleteButton } from '@/components/admin/delete-button'
 import { deleteOrder } from '@/app/actions/admin'
@@ -42,7 +42,7 @@ export default async function Orders({ searchParams }: { searchParams: Promise<{
                 </div>
                 <a href={`tel:${o.phone}`} className="mt-1 block text-sm"><b>{o.customer_name}</b> • <span className="underline">{o.phone}</span></a>
                 <p className="text-xs text-neutral-500">{o.address}</p>
-                <div className="mt-1 text-xs">{o.order_items.map((i) => <div key={i.id}>{i.product_name} ({i.size}×{i.qty})</div>)}</div>
+                <div className="mt-2 grid gap-1.5">{o.order_items.map((i) => <div key={i.id} className="flex items-center gap-2 text-xs"><Thumb src={o.image_url || itemImg(i)} size={44} /><span>{i.product_name} <span className="text-neutral-500">({i.size}×{i.qty})</span></span></div>)}</div>
                 <div className="mt-2 flex items-center justify-between gap-2">
                   <span className="text-sm">COD <b>{tk(m.cod)}</b> • <span className={m.profit >= 0 ? 'text-green-600' : 'text-red-600'}>{counts(o) ? tk(m.profit) : '—'}</span></span>
                   <StatusSelect id={o.id} value={o.status} />
@@ -66,7 +66,7 @@ export default async function Orders({ searchParams }: { searchParams: Promise<{
                     <td className="td font-semibold"><Link href={`/admin/orders/${o.id}`} className="hover:text-[#ff5a1f]">{orderNo(o.id)}</Link></td>
                     <td className="td whitespace-nowrap text-neutral-500">{shortDate(o.created_at)}</td>
                     <td className="td"><b className="font-semibold">{o.customer_name}</b><div className="text-xs text-neutral-500">{o.phone} • {o.address}</div></td>
-                    <td className="td text-xs">{o.order_items.map((i) => <div key={i.id}>{i.product_name} <span className="text-neutral-500">({i.size}×{i.qty})</span></div>)}{o.reseller_id && <div className="text-purple-700">🤝 {resellers.find((r) => r.id === o.reseller_id)?.name}</div>}</td>
+                    <td className="td text-xs"><div className="grid gap-1.5">{o.order_items.map((i) => <div key={i.id} className="flex items-center gap-2"><Thumb src={o.image_url || itemImg(i)} /><span>{i.product_name} <span className="text-neutral-500">({i.size}×{i.qty})</span></span></div>)}</div>{o.reseller_id && <div className="text-purple-700">🤝 {resellers.find((r) => r.id === o.reseller_id)?.name}</div>}</td>
                     <td className="td"><SourceBadge s={o.source} /></td>
                     <td className="td text-right">{tk(m.cod)}</td>
                     <td className={`td text-right font-semibold ${m.profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>{counts(o) ? tk(m.profit) : '—'}</td>

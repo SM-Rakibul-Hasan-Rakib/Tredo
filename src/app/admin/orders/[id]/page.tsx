@@ -6,10 +6,12 @@ import { orderMoney } from '@/lib/profit'
 import { DELIVERY, orderNo, tk } from '@/lib/format'
 import { SOURCES } from '@/lib/types'
 import { deleteOrder, saveOrderMeta } from '@/app/actions/admin'
-import { PageHead, Row, SourceBadge } from '@/components/admin/ui'
+import { PageHead, Row, SourceBadge, Thumb, itemImg } from '@/components/admin/ui'
 import { StatusSelect } from '@/components/admin/status-select'
 import { DeleteButton } from '@/components/admin/delete-button'
 import { OrderItemsEditor } from '@/components/admin/order-items-editor'
+import { MediaField } from '@/components/admin/media-field'
+import { ActionForm } from '@/components/admin/action-form'
 
 export default async function OrderDetail({ params }: { params: Promise<{ id: string }> }) {
   await requireAdmin()
@@ -21,7 +23,7 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
     <label className="label">{label}<input name={name} type={type} defaultValue={String(o[name] ?? '')} className="input" /></label>
   )
   // only what the browser needs (no buy price)
-  const plist = products.map((p) => ({ id: p.id, name: p.name, sell_price: Number(p.sell_price), stock: p.stock }))
+  const plist = products.map((p) => ({ id: p.id, name: p.name, sell_price: Number(p.sell_price), stock: p.stock, image: p.images?.[0] ?? null }))
   return (
     <>
       <PageHead title={`Order ${orderNo(o.id)}`} sub={new Date(o.created_at).toLocaleString('en-GB')}>
@@ -37,18 +39,22 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
       <div className="grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[1.4fr_1fr]">
         <div className="flex flex-col gap-4">
           <div className="card">
+            {o.image_url && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <a href={o.image_url} target="_blank" rel="noreferrer" className="float-right ml-3"><img src={o.image_url} alt="Order photo" className="h-28 w-28 rounded-xl border border-line object-cover" /></a>
+            )}
             <div className="mb-1 flex items-center gap-2"><b className="text-lg">{o.customer_name}</b><SourceBadge s={o.source} /></div>
             <p className="text-sm">📞 <a href={`tel:${o.phone}`} className="underline">{o.phone}</a> • {o.zone}</p>
             <table className="mt-3 w-full"><tbody>
               {o.order_items.map((i) => (
-                <tr key={i.id}><td className="td">{i.product_name}<div className="text-xs text-neutral-500">Size {i.size} × {i.qty}</div></td><td className="td text-right">{tk(i.unit_price * i.qty)}</td><td className="td text-right text-xs text-orange-700">buy {tk(i.unit_buy_price * i.qty)}</td></tr>
+                <tr key={i.id}><td className="td"><div className="flex items-center gap-3"><Thumb src={itemImg(i)} size={56} /><div>{i.product_name}<div className="text-xs text-neutral-500">Size {i.size} × {i.qty}</div></div></div></td><td className="td text-right">{tk(i.unit_price * i.qty)}</td><td className="td text-right text-xs text-orange-700">buy {tk(i.unit_buy_price * i.qty)}</td></tr>
               ))}
             </tbody></table>
           </div>
 
           <OrderItemsEditor key={o.order_items.map((i) => `${i.id}-${i.size}-${i.qty}-${i.unit_price}`).join()} orderId={o.id} items={o.order_items} products={plist} />
 
-          <form action={saveOrderMeta.bind(null, o.id)} className="grid-cols-[minmax(0,1fr)] card grid gap-3 sm:grid-cols-2">
+          <ActionForm action={saveOrderMeta.bind(null, o.id)} success="Order updated!" className="grid-cols-[minmax(0,1fr)] card grid gap-3 sm:grid-cols-2">
             <h3 className="font-semibold sm:col-span-2">Edit order details</h3>
             {f('customer_name', 'Customer name', 'text')}{f('phone', 'Phone', 'tel')}
             <label className="label sm:col-span-2">Address<input name="address" defaultValue={o.address ?? ''} className="input" /></label>
@@ -61,8 +67,9 @@ export default async function OrderDetail({ params }: { params: Promise<{ id: st
             {f('delivery_charge', 'Delivery charge (customer)')}{f('courier_cost', '🔒 Courier cost (actual)')}
             {f('packaging_cost', '🔒 Packaging / other')}{f('discount', 'Discount')}{f('advance', 'Advance received')}
             <label className="label sm:col-span-2">Note<input name="note" defaultValue={o.note ?? ''} className="input" /></label>
+            <div className="sm:col-span-2 sm:max-w-56"><MediaField name="image_url" label="📷 Order photo" hint=" — upload/bodlao, tarpor Save changes" value={o.image_url} folder="orders" aspect="aspect-square" /></div>
             <button className="btn bg-[#ff5a1f] text-white sm:col-span-2">💾 Save changes</button>
-          </form>
+          </ActionForm>
         </div>
         <div className="card h-fit">
           <h3 className="mb-2 font-semibold">Profit breakdown 🔒</h3>

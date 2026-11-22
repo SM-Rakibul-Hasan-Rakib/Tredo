@@ -5,6 +5,8 @@ import { createAdminOrder } from '@/app/actions/admin'
 import { DELIVERY, sizesOf, tk, type Zone } from '@/lib/format'
 import type { OrderSource, OrderStatus, Product, Reseller } from '@/lib/types'
 import { Row } from './ui'
+import { MediaField } from './media-field'
+import { notify } from './swal'
 
 type Line = { productId: number; size: string; qty: number; unitPrice: number }
 
@@ -13,7 +15,7 @@ export function OrderForm({ products, resellers }: { products: Product[]; resell
   const [pending, start] = useTransition()
   const [err, setErr] = useState('')
   const [src, setSrc] = useState<OrderSource>('Messenger')
-  const [f, setF] = useState({ name: '', phone: '', address: '', zone: 'Inside Dhaka' as Zone, delivery_charge: 70, courier_cost: 60, courier_name: 'Steadfast', packaging_cost: 25, discount: 0, advance: 0, status: 'Pending' as OrderStatus, note: '', reseller_id: resellers[0]?.id ?? 0, paste: '' })
+  const [f, setF] = useState({ name: '', phone: '', address: '', zone: 'Inside Dhaka' as Zone, delivery_charge: 70, courier_cost: 60, courier_name: 'Steadfast', packaging_cost: 25, discount: 0, advance: 0, status: 'Pending' as OrderStatus, note: '', reseller_id: resellers[0]?.id ?? 0, paste: '', image_url: '' })
   const first = products[0]
   const [lines, setLines] = useState<Line[]>(first ? [{ productId: first.id, size: sizesOf(first.stock)[0] ?? '', qty: 1, unitPrice: first.sell_price }] : [])
   const set = (k: keyof typeof f, v: string | number) => setF((x) => ({ ...x, [k]: v }))
@@ -43,10 +45,10 @@ export function OrderForm({ products, resellers }: { products: Product[]; resell
       const r = await createAdminOrder({
         source: src, status: f.status, customer_name: f.name, phone: f.phone, address: f.address, zone: f.zone,
         delivery_charge: f.delivery_charge, courier_cost: f.courier_cost, courier_name: f.courier_name, packaging_cost: f.packaging_cost,
-        discount: f.discount, advance: f.advance, note: f.note, reseller_id: src === 'Reseller' ? f.reseller_id : null, items: lines,
+        discount: f.discount, advance: f.advance, note: f.note, reseller_id: src === 'Reseller' ? f.reseller_id : null, items: lines, image_url: f.image_url || null,
       })
-      if (r.ok) router.push(`/admin/orders/${r.id}`)
-      else setErr(r.error)
+      if (r.ok) { notify('Order created!', { text: `Order #${1000 + r.id} save hoyeche` }); router.push(`/admin/orders/${r.id}`) }
+      else { setErr(r.error); notify('Order save hoy nai', { type: 'error', text: r.error }) }
     })
 
   const num = (k: keyof typeof f, label: string) => <label className="label">{label}<input type="number" value={f[k] as number} onChange={(e) => set(k, Number(e.target.value))} className="input" /></label>
@@ -91,6 +93,7 @@ export function OrderForm({ products, resellers }: { products: Product[]; resell
         <label className="label">Status<select value={f.status} onChange={(e) => set('status', e.target.value)} className="input">{['Pending', 'Confirmed', 'Shipped', 'Delivered'].map((s) => <option key={s}>{s}</option>)}</select></label>
         {src === 'Reseller' && <label className="label">Reseller<select value={f.reseller_id} onChange={(e) => set('reseller_id', Number(e.target.value))} className="input">{resellers.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}</select></label>}
         <label className="label sm:col-span-2">Note<input value={f.note} onChange={(e) => set('note', e.target.value)} className="input" /></label>
+        <div className="sm:col-span-2 sm:max-w-56"><MediaField name="image_url" label="📷 Order photo" hint=" — customer je chobi pathiyeche / product er chobi (optional)" folder="orders" aspect="aspect-square" onChange={(u) => set('image_url', u)} /></div>
         {err && <p className="rounded-lg bg-red-50 p-2.5 text-sm text-red-600 sm:col-span-2">{err}</p>}
         <button disabled={pending || !lines.length} onClick={submit} className="btn bg-[#ff5a1f] text-white sm:col-span-2">{pending ? 'Saving…' : '✅ Submit Order'}</button>
       </div>

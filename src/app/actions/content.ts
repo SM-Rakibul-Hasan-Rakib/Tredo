@@ -12,7 +12,7 @@ const refresh = () => {
 }
 
 /** Gives the browser a one-time URL to upload a big file (photo/video) straight to Supabase Storage. */
-export async function getUploadTarget(folder: 'banners' | 'categories' | 'videos', ext: string) {
+export async function getUploadTarget(folder: 'banners' | 'categories' | 'videos' | 'orders', ext: string) {
   await requireAdmin()
   const safe = ext.replace(/[^a-z0-9]/gi, '').toLowerCase().slice(0, 5) || 'bin'
   const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${safe}`

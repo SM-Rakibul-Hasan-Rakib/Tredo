@@ -35,6 +35,8 @@ export type OrderItem = {
   unit_price: number
   unit_buy_price: number
   unit_reseller_price: number | null
+  /** product photo (joined) — null if product was deleted */
+  product?: { images: string[] } | null
 }
 
 export type Order = {
@@ -55,6 +57,8 @@ export type Order = {
   advance: number
   reseller_id: number | null
   note: string | null
+  /** order er photo (admin upload kore) */
+  image_url?: string | null
   order_items: OrderItem[]
 }
 

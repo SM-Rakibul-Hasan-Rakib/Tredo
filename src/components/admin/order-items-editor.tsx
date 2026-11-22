@@ -5,8 +5,10 @@ import { Trash2 } from 'lucide-react'
 import { saveOrderItems } from '@/app/actions/admin'
 import { sizesOf, tk } from '@/lib/format'
 import type { OrderItem } from '@/lib/types'
+import { Thumb } from './ui'
+import { notify } from './swal'
 
-type P = { id: number; name: string; sell_price: number; stock: Record<string, number> }
+type P = { id: number; name: string; sell_price: number; stock: Record<string, number>; image: string | null }
 type Line = { id?: number; product_id: number | null; name: string; size: string; qty: number; unit_price: number; remove?: boolean }
 
 /** Order er product gulo edit: size, qty, price bodlao, notun product add, ba remove. */
@@ -25,8 +27,8 @@ export function OrderItemsEditor({ orderId, items, products }: { orderId: number
     start(async () => {
       setMsg(null)
       const r = await saveOrderItems(orderId, lines.map(({ id, product_id, size, qty, unit_price, remove }) => ({ id, product_id, size, qty, unit_price, remove })))
-      if (r.ok) { setMsg({ ok: true, t: 'Products updated ✓ (stock auto thik hoye geche)' }); router.refresh() }
-      else setMsg({ ok: false, t: r.error ?? 'Error' })
+      if (r.ok) { setMsg({ ok: true, t: 'Products updated ✓ (stock auto thik hoye geche)' }); notify('Products updated!', { text: 'Stock auto thik hoye geche' }); router.refresh() }
+      else { setMsg({ ok: false, t: r.error ?? 'Error' }); notify('Save hoy nai', { type: 'error', text: r.error }) }
     })
 
   return (
@@ -42,13 +44,16 @@ export function OrderItemsEditor({ orderId, items, products }: { orderId: number
           if (l.size && !sizes.includes(l.size)) sizes.unshift(l.size)
           return (
             <div key={l.id ?? `new-${k}`} className={`grid grid-cols-[1fr_1fr_1fr_36px] items-center gap-2 rounded-xl border border-line p-2 sm:grid-cols-[minmax(0,2fr)_90px_70px_100px_36px] ${l.remove ? 'opacity-40 line-through' : ''}`}>
-              {l.id ? (
-                <div className="col-span-4 min-w-0 truncate text-sm font-semibold sm:col-span-1">{l.name}{!p && <span className="ml-1 text-xs font-normal text-neutral-500">(product deleted)</span>}</div>
-              ) : (
-                <select value={l.product_id ?? ''} onChange={(e) => { const np = prod(Number(e.target.value))!; upd(k, { product_id: np.id, name: np.name, size: sizesOf(np.stock)[0] ?? '', unit_price: np.sell_price }) }} className="input col-span-4 sm:col-span-1">
-                  {products.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}
-                </select>
-              )}
+              <div className="col-span-4 flex min-w-0 items-center gap-2 sm:col-span-1">
+                <Thumb src={p?.image} />
+                {l.id ? (
+                  <div className="min-w-0 truncate text-sm font-semibold">{l.name}{!p && <span className="ml-1 text-xs font-normal text-neutral-500">(product deleted)</span>}</div>
+                ) : (
+                  <select value={l.product_id ?? ''} onChange={(e) => { const np = prod(Number(e.target.value))!; upd(k, { product_id: np.id, name: np.name, size: sizesOf(np.stock)[0] ?? '', unit_price: np.sell_price }) }} className="input min-w-0">
+                    {products.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}
+                  </select>
+                )}
+              </div>
               <select disabled={!p || l.remove} value={l.size} onChange={(e) => upd(k, { size: e.target.value })} className="input" title="Size">
                 {sizes.map((s) => <option key={s} value={s}>{s}{p && p.stock[s] != null ? ` (${p.stock[s]})` : ''}</option>)}
               </select>

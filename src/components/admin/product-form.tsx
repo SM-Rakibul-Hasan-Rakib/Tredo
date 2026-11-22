@@ -1,5 +1,7 @@
 'use client'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { notify } from './swal'
 import { useState, useTransition } from 'react'
 import { saveProduct } from '@/app/actions/admin'
 import { tk } from '@/lib/format'
@@ -20,6 +22,7 @@ async function compress(file: File): Promise<File> {
 }
 
 export function ProductForm({ cats, p }: { cats: Category[]; p?: Product }) {
+  const router = useRouter()
   const [pending, start] = useTransition()
   const [err, setErr] = useState('')
   const [images, setImages] = useState<string[]>(p?.images ?? [])
@@ -41,7 +44,9 @@ export function ProductForm({ cats, p }: { cats: Category[]; p?: Product }) {
     setErr('')
     start(async () => {
       const r = await saveProduct(fd)
-      if (r && !r.ok) setErr(r.error)
+      if (!r.ok) { setErr(r.error); notify('Save hoy nai', { type: 'error', text: r.error }); return }
+      notify(p ? 'Product updated!' : 'Product added!', { text: 'Website e o update hoye geche ⚡' })
+      router.push('/admin/products')
     })
   }
   const total = Object.values(stock).reduce((a, b) => a + b, 0)
